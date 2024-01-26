@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-8d-&0q1#!o!8p-nj&oo#(fhbh^291fs1ak-w)*$c_-jxnk$c-#
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['main.d1uwy1vvegp4eg.amplifyapp.com','127.0.0.1']
+ALLOWED_HOSTS = ['main.d1uwy1vvegp4eg.amplifyapp.com','localhost','127.0.0.1','c8dd-103-130-90-210.ngrok-free.app']
 
 
 # Application definition
@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'classification_model',
     'rest_framework',
+    'geoposition',
 ]
 
 MIDDLEWARE = [
