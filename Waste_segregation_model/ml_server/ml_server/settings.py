@@ -39,7 +39,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'classification_model',
     'rest_framework',
-    'geoposition',
 ]
 
 MIDDLEWARE = [
