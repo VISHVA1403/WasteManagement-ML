@@ -11,6 +11,13 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
+import socket
+
+# Get the local IP address of the server
+hostname, _, _ = socket.gethostbyname_ex(socket.gethostname())
+local_ip = [ip for ip in socket.gethostbyname_ex(hostname)[-1] if not ip.startswith("127.")][0]
+
+print(f"Server is running on http://{local_ip}:8000/")
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -25,12 +32,13 @@ SECRET_KEY = 'django-insecure-8d-&0q1#!o!8p-nj&oo#(fhbh^291fs1ak-w)*$c_-jxnk$c-#
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['vishva1428.pythonanywhere.com','localhost','127.0.0.1','08ef-103-130-90-210.ngrok-free.app']
+ALLOWED_HOSTS = ['vishva1428.pythonanywhere.com','localhost','5ec3-121-200-52-130.ngrok-free.app','127.0.0.1','0.0.0.0','192.168.190.163']
 
 
 # Application definition
 
 INSTALLED_APPS = [
+        'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -38,7 +46,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'classification_model',
+    'corsheaders',
     'rest_framework',
+    'rest_framework.authtoken',
 ]
 
 MIDDLEWARE = [
@@ -46,10 +56,18 @@ MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
+    
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ],
+}
+
 
 ROOT_URLCONF = 'ml_server.urls'
 
@@ -100,8 +118,75 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+JAZZMIN_SETTINGS = {
+    # title of the window
+    'site_title': 'Polls Admin',
 
+    # Title on the login screen
+    'site_header': 'Polls',
 
+    # square logo to use for your site, must be present in static files, used for favicon and brand on top left
+    'site_logo': None,
+
+    # Welcome text on the login screen
+    'welcome_sign': 'Welcome to polls',
+
+    # Copyright on the footer
+    'copyright': 'Acme Ltd',
+
+    # The model admin to search from the search bar, search bar omitted if excluded
+    'search_model': 'auth.User',
+
+    # Field name on user model that contains avatar image
+    'user_avatar': None,
+
+    # Links to put along the top menu
+    'topmenu_links': [
+
+        # Url that gets reversed (Permissions can be added)
+        {'name': 'Home', 'url': 'admin:index', 'permissions': ['auth.view_user']},
+
+        # external url that opens in a new window (Permissions can be added)
+        {'name': 'Support', 'url': 'https://github.com/farridav/django-jazzmin/issues', 'new_window': True},
+
+        # model admin to link to (Permissions checked against model)
+        {'model': 'auth.User'},
+
+        # App with dropdown menu to all its models pages (Permissions checked against models)
+        {'app': 'polls'},
+    ],
+
+    # Whether to display the side menu
+    'show_sidebar': True,
+
+    # Whether to aut expand the menu
+    'navigation_expanded': True,
+
+    # Hide these apps when generating side menu
+    'hide_apps': [],
+
+    # Hide these models when generating side menu
+    'hide_models': [],
+
+    # List of apps to base side menu ordering off of
+    'order_with_respect_to': ['accounts', 'polls'],
+
+    # Custom links to append to app groups, keyed on app name
+    'custom_links': {
+        'polls': [{
+            'name': 'Make Messages', 'url': 'make_messages', 'icon': 'fa-comments',
+            'permissions': ['polls.view_polls']
+        }]
+    },
+
+    # Custom icons per model in the side menu See https://www.fontawesomecheatsheet.com/font-awesome-cheatsheet-5x/
+    # for a list of icon classes
+    'icons': {
+        'auth.user': 'fa-user',
+    }
+}
+
+# AUTH_USER_MODEL = 'classification_model.CustomUser'
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
@@ -123,3 +208,8 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+# settings.py
+CORS_ALLOWED_ORIGINS = [
+    "http://192.168.228.163",
+    # Add other allowed origins as needed
+]
